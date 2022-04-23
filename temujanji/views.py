@@ -15,6 +15,8 @@ from typing import Dict, List
 
 from formtools.wizard.views import SessionWizardView
 
+from temujanji.utils import BookingSettingMixin
+
 
 # Create your views here.
 #########
@@ -22,7 +24,7 @@ from formtools.wizard.views import SessionWizardView
 #########
 
 
-class TempahanHomeView(TemplateView):
+class TempahanHomeView(BookingSettingMixin,TemplateView):
     model = Tempahan
     template_name = "temujanji/admin/dashboard.html"
 
@@ -35,12 +37,12 @@ class TempahanHomeView(TemplateView):
         return context
 
 
-class TempahanListView(ListView):
+class TempahanListView(BookingSettingMixin, ListView):
     model = Tempahan
     template_name = "temujanji/admin/list_tempahan.html"
     paginate_by = PAGINATION
 
-class TempahanSettingView(UpdateView):
+class TempahanSettingView(BookingSettingMixin, UpdateView):
     form_class = TempahanSettingsForm
     template_name = 'temujanji/admin/tempahan_settings.html'
 
@@ -50,12 +52,12 @@ class TempahanSettingView(UpdateView):
     def get_success_url(self):
         return reverse('tempahan_settings')
 
-class TempahanDeleteView(DeleteView):
+class TempahanDeleteView(BookingSettingMixin, DeleteView):
     model = Tempahan
     success_url = reverse_lazy('list_tempahan')
     queryset = Tempahan.objects.filter()
 
-class TempahanApproveView(View):
+class TempahanApproveView(BookingSettingMixin, View):
     model = Tempahan
     success_url = reverse_lazy('list_tempahan')
     fields = ('approved',)
@@ -80,6 +82,7 @@ BOOK_STEP_FORMS = (
 
 class CiptaTemujanjiWizardView(SessionWizardView):
     template_name = 'temujanji/user/booking_wizard.html'
+    form_list = BOOK_STEP_FORMS
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form=form, **kwargs)
@@ -93,10 +96,9 @@ class CiptaTemujanjiWizardView(SessionWizardView):
         context.update({
             'tempahan_settings' : SettingTempahan.objects.first(),
             'progress_width': progress_width,
-            'booking_id' : booking.id,
             'booking_bg': TEMUJANJI_BG,
             'description': TEMUJANJI_DESC,
-            'title' : TEMUJANJI_TAJUK,
+            'title' : TEMUJANJI_TAJUK
         })
         return context
 
@@ -107,9 +109,10 @@ class CiptaTemujanjiWizardView(SessionWizardView):
 
         if not context['tempahan_settings'].booking_enable:
             return redirect(TEMUJANJI_DISABLE_URL)
+
         return self.render_to_response(context)
 
-    def done(self, form_list,**kwargs):
+    def done(self, form_list, **kwargs):
         data = dict((key, value) for form in form_list for key, value in form.cleaned_data.items())
         temujanji = Tempahan.objects.create(**data)
 
@@ -119,14 +122,12 @@ class CiptaTemujanjiWizardView(SessionWizardView):
         return render(self.request, 'temujanji/user/tempahan_done.html',{
 
             'progress_width': '100',
-            'booking_id': booking.id,
+            'booking_id': temujanji.id,
             'booking_bg' : TEMUJANJI_BG,
             'descriptions' : TEMUJANJI_DESC,
-            'title': TEMUJANJI_TAJUK,
-
+            'title': TEMUJANJI_TAJUK
 
         } )
-
 
 
 
