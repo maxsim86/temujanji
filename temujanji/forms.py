@@ -1,6 +1,6 @@
 from django import forms
 
-from tempahan.models import SettingTempahan
+from temujanji.models import SettingTempahan
 
 
 class TukarInputStyle(forms.Form):
@@ -12,20 +12,17 @@ class TukarInputStyle(forms.Form):
             input_type = self.fields[field].widget.input_type
             classes = self.fields[field].widget.attrs.get("class")
             if classes is not None:
-                classes += 
-                    "form-check-input"
-                    if input_type == "checkbox"
-                    else "form control flatpickr-input"
-                    else:
-                    classes = 'form-check -input' if input_type == 'checkbox' else "form contrl flatpickr-input"
-                    self.fields[field].widget.attrs.update({'class':classes})
+                classes += "form-check-input" if input_type == "checkbox" else "form control flatpickr-input"
+            else:
+                classes = 'form-check -input' if input_type == 'checkbox' else "form contrl flatpickr-input"
+                self.fields[field].widget.attrs.update({'class':classes})
                     
 
 class TempahanTarikhForm(TukarInputStyle):
     tarikh = forms.DateField(required=True,)
 
 class TempahanMasaForm(TukarInputStyle):
-    masa = forms.TimeField(widget=Forms.HiddenInput())
+    masa = forms.TimeField(widget=forms.HiddenInput())
 
 class TempahanPlangganForm(TukarInputStyle):
     nama_pengguna = forms.CharField(max_length=250)

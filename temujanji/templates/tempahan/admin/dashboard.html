@@ -1,0 +1,31 @@
+{% extends 'tempahan/base.html' %}
+
+{% block content %}
+
+<h2 class="text-black-50 my-4">Dashboard</h2>
+<hr>
+<!--TOP card MULA-->
+{% include 'temujanji/admin/components/home_top_card.html' %}
+<!-- TOP card TAMAT-->
+
+<h4 class="text-black-50">Overview</h4>
+<hr>
+
+<div class="row">
+    <!--last waiting temujanji table MULA-->
+    <div class="col col-lg-6 table-responsive my-2">
+        <h6 class="text-black-50">Temujanji Bagi Minggu Ini</h6>
+        {% include "temujanji/admin/components/jadual_temujanji.html" with temujanji=last_bookings %}
+    
+    </div>
+    <!--last waiting temujanji table TAMAT-->
+
+    <!--last waiting jadual temujanji MULA -->
+    <div class="col-lg-6 table-responsive my-2">
+        <h6 class="text-black-50">Tempahan Menunggu</h6>
+        {% include 'temujanji/admin/components/jadual_temujanji.html' with temujanji=tempahan_menunggu %}
+    </div>
+    <!--last waiting jadual temujanji TAMAT-->
+</div>
+
+{% endblock content %}
