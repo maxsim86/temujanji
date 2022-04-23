@@ -1,12 +1,6 @@
 import datetime
-from multiprocessing.sharedctypes import Value
-from time import time
-from traceback import format_list
-from typing import Dict
-from unicodedata import name
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, UpdateView, DeleteView, View
-from django.shortcuts import render
 from temujanji.forms import TempahanMasaForm, TempahanSettingsForm, TempahanTarikhForm, TempahanPlangganForm
 from temujanji.models import Tempahan, SettingTempahan
 from temujanji.settings import PAGINATION,TEMUJANJI_BG,TEMUJANJI_DESC,TEMUJANJI_TAJUK, TEMUJANJI_DISABLE_URL, TEMUJANJI_SUCCESS_REDIRECT_URL
