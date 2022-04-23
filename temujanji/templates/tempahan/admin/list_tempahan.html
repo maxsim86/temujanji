@@ -1,0 +1,21 @@
+{% extends 'tempahan/base.html' %}
+
+{% block content  %}
+<h2 class="text-black-50 my-4">tempahan</h2>
+<hr>
+<div class="row mt-1">
+  <!--last waiting appointment table START -->
+  <div style="min-height: 200px;" class='my-2'>
+    {% include 'tempahan/admin/components/booking_table.html' with booking=object_list full_table=True %}
+    </div>
+
+    <!--  last witing appointmen table END -->
+
+  </div>
+
+
+{% include 'tempahan/admin/components/paginations.html' %}
+    {% endwith %}
+
+
+{% endblock %}
