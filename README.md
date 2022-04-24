@@ -1,0 +1,2 @@
+# temujanji
+sistem temujanji
