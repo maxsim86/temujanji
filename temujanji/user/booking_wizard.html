@@ -1,0 +1,110 @@
+{% extends "temujanji/user/base.html" %}
+{% load static %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+{% endblock extra_css %}
+
+
+{% block side_text %}
+    <div class="booking-cta">
+        <h1>{{title}}</h1>
+        <p>{{ description }}</p>
+    </div>
+
+{% endblock side_text %}
+
+{% block step %}
+  {% include "temujanji/admin/components/papar_error.html" %}
+
+  <input type="hidden" id="tempahan_available_sebulan" value="{{ tempahan_settings.tempahan_available_sebulan }}"/>
+<input type="hidden" id="matikan_hujung_minggu" value="tempahan_settings.matikan_hujung_minggu" />
+  <!--step MULA-->
+
+  <div class="tab-pane fade show active" id="pills-date" role="tabpanel" aria-labelledby="pills-date-tab">
+      <h1 class="text-muted h2">{{ wizard.step.current }}</h1>
+      <p class="text-muted">Mohon mengisi dalam temujanji {{ wizard.steps.current }:} </p>
+      <hr>
+      {{ wizard.management_form }}
+      <div class="row">
+          {% for field in wizard.form %}
+          <div class="col-md-6 mb-3">
+              <div class="form-floating {{ if field.is_hidden }} d-none {{endif}}">
+                  {{field}}
+                  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+              </div>
+          </div>
+
+          {% if wizard.steps.currrent=='Masa' %}
+          <!--Senarai masa MULA-->
+          <div id="time-list" class="container row g-2">
+              {% for item in dapatkan_masa_available  %}
+              <p class="border mx-1 col-2 py-3 text-center bg-{% if item.is_taken %}secondary {% elif item.time ==field.value %} primary text-white {% else %} light{% endif %}">{{ item.masa }}</p>
+
+                
+              {% endfor %}
+
+          </div>
+          <!--SENARAI MASA TAMAT-->
+
+          {% endif %}
+            
+          {% endfor %}
+      </div>
+  <!--step TAMAT-->
+
+  </div>
+
+{% endblock step %}
+
+
+{% block extra_script %}
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+//time function MULA / START
+document.querySelectorAll("time-list .bg-light, #time-list .bg-primary").forEach(timeBtn =>{
+    timeBtn.addEventListener("click", timeBtnClicked.bind(this,timeBtn))
+})
+
+function timeBtnClicked(item){
+    document.querySelectorAll("#time-list .bg-primary").forEach(item =>{
+        item.classList.remove("bg-primary", "text-white")
+        item.classList.add("bg-light")
+    })
+        item.classList.remove("bg-light")
+        item.classList.add("bg-primary, "text-white")
+
+        document.querySelector("#id_Time-time").value = item.innerHTML
+
+}
+
+//time function TAMAT
+
+//date function MULA
+var d = new Tarikh();
+d.setMonth(d.getMonth()+ document.querySelector("#tempahan_available_sebulan").value);
+
+const matikan_hujung_minggu = document.querySelector("#matikan_hujung_minggu").value;
+function rmWeekend(date) {
+    if (matikan_hujung_minggu == "False") return ""
+    return (tarikh.getDay() === 0 || tarikh.getDay() === 6);
+
+}
+
+flatpickr("id_Date-date", {
+    minDate: "today",
+    maxDate: d,
+    disable: [rmWeekend],
+    shorthand:true,
+    "locale": {
+        "firstDayOfWeek": 1 //mulakan 1st minggu dengan ISNIN
+
+    }
+})
+
+</script>
+
+{% endblock extra_script %}
